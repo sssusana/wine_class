@@ -58,7 +58,7 @@ prop.table(table(mysm$Spcork))
 
 testsolution<- rpart(formula = Spcork ~ Dayswus + Income + Recency + Monetary, data = mysm, 
                      method = "class",
-                     control = rpart.control(minsplit = 100, cp = 0)
+                     control = rpart.control(minsplit = 40, cp = 0)
 printcp(testsolution)
 as.party(testsolution)
 rpart.plot(testsolution)
