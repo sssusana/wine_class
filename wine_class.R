@@ -1,6 +1,7 @@
 # Load packages and files 
 library(readxl)
-exerc1 <- read_excel("~/Documents/GitHub/Wine_Classification/Exer1.xls")
+library(rpart)
+exerc1 <- read_excel("~/Documents/GitHub/wine_class/Exer1.xls")
 View(Exer1)
 
 #Discriptive analysis
@@ -9,7 +10,13 @@ sapply(Exer1, class)
 table(exerc1$Spcork)
 
 #Check some main var
-print("Kids Home")
+print("Kids at Home")
 prop.table(table(exerc1$Spcork,exerc1$Kidhome))
-
+print("Teens at Home?")
 prop.table(table(exerc1$Spcork,exerc1$Teenhome))
+
+#DS only with buyers
+
+buyers <- exerc1[which(exerc1$Spcork == 1), ]
+
+#Decision Tree with rpart
