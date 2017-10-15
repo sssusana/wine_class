@@ -25,9 +25,10 @@ buyers <- exerc1[which(exerc1$Spcork == 1), ]
 #Method = "class" if you have a classification tree
 #Method = "anova" if you have a regression tree
 #Variables actually used in tree construction: Dayswus  Income   Monetary Recency 
-rpart(formula = Spcork ~ Dayswus + Income + Recency + Monetary, data = dt_wines, method = "class")
+colnames(dt_wines)
+dtwines <-rpart(formula = Spcork ~ Dayswus + Income + Recency + Monetary + Age + Edu + Teenhome + Kidhome + Freq, data = dt_wines, method = "class")
 printcp(dtwines)
-dtwines.plot <- as.party(dtwines) 
+as.party(dtwines) 
 print("Now we see how many variables don't really matter")
 
 #Only with the proper var + rpart.control
@@ -49,3 +50,15 @@ solution_merged <- merge(customersDB, mysolution, by="Custid")
 
 #Saving
 write.table(solution_merged, file= "mysm.xls", col.names = TRUE)
+
+dt_solution <- read_excel("~/Documents/GitHub/wine_class/mysm.xls")
+
+#Decision Tree on Predicted Data aka.. Testing solution
+prop.table(table(mysm$Spcork))
+
+testsolution<- rpart(formula = Spcork ~ Dayswus + Income + Recency + Monetary, data = mysm, 
+                     method = "class",
+                     control = rpart.control(minsplit = 100, cp = 0)
+printcp(testsolution)
+as.party(testsolution)
+rpart.plot(testsolution)
