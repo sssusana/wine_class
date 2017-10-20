@@ -34,7 +34,7 @@ print("Now we see how many variables don't really matter")
 #Only with the proper var + rpart.control
 dtwine_control <- rpart(Spcork ~ 
                    Dayswus + Income + Recency + Monetary, 
-                   data = dt_wines, method="class", control = rpart.control(minsplit = 40, cp = 0))
+                   data = dt_wines, method="class", control = rpart.control(minsplit = 40, cp = 0.005))
 
 #Info + viz on Decision Tree
 as.party(dtwine_control)
