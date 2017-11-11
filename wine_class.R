@@ -2,6 +2,9 @@
 library(readxl)
 library(rpart)
 library(rpart.plot)
+library(caret)
+library(party)
+library(partykit)
 exerc1 <- read_excel("~/Documents/GitHub/wine_class/Exer1.xls")
 customersDB <- read_excel("~/Documents/GitHub/wine_class/finalDS.xlsx")
 
@@ -48,6 +51,16 @@ plot(myprediction)
 mysolution <- data.frame(Custid=customersDB$Custid, Spcork = myprediction)
 solution_merged <- merge(customersDB, mysolution, by="Custid")
 
+#Confusing Matrix files (testing model in the 2k)
+dtwines2k <-dt_wines
+predkfold <- predict(dtwine_control, newdata = dtwines2k, type="class")
+predkfold_sol <- data.frame(Custid=dt_wines$Custid, kfold=predkfold) 
+predkfold_merged <- merge(dt_wines, predkfold_sol, by="Custid")
+
+#ConfusionMatrix for 2k
+confusionMatrix2k <- confusionMatrix(predkfold_merged$kfold, predkfold_merged$Spcork)
+confusionMatrix2k
+
 #Saving
 write.table(solution_merged, file= "mysm.xls", col.names = TRUE)
 
@@ -58,7 +71,7 @@ prop.table(table(mysm$Spcork))
 
 testsolution<- rpart(formula = Spcork ~ Dayswus + Income + Recency + Monetary, data = mysm, 
                      method = "class",
-                     control = rpart.control(minsplit = 40, cp = 0)
+                     control = rpart.control(minsplit = 40, cp = 0))
 printcp(testsolution)
 as.party(testsolution)
 rpart.plot(testsolution)
