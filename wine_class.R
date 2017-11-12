@@ -1,11 +1,13 @@
-# Load packages and files 
+# Load packages and datasets
 library(readxl)
 library(rpart)
 library(rpart.plot)
 library(caret)
 library(party)
 library(partykit)
+#Load 2k DB:
 exerc1 <- read_excel("~/Documents/GitHub/wine_class/Exer1.xls")
+#Load 8k DB:
 customersDB <- read_excel("~/Documents/GitHub/wine_class/finalDS.xlsx")
 
 #Discriptive analysis
@@ -21,8 +23,14 @@ prop.table(table(exerc1$Spcork,exerc1$Kidhome))
 print("Teens at Home?")
 prop.table(table(exerc1$Spcork,exerc1$Teenhome))
 
-#DS only with buyers
+#Dataset only with buyers
 buyers <- exerc1[which(exerc1$Spcork == 1), ]
+
+summary(exerc1)
+summary(buyers)
+comb <- rbind(cbind(buyers, table = "Buyers"), cbind(exerc1, table="All"))
+s <- summary(table ~., data=comb, method= "reverse")
+print(s, exclude1 = TRUE)
 
 #Decision Tree with rpart
 #Method = "class" if you have a classification tree
