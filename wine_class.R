@@ -73,6 +73,9 @@ pred_test_ds <- data.frame(ID=dtwines2k$Custid, Spcork=dtwines2k$Spcork, Pred=pr
 confusionMatrix2k <- confusionMatrix(pred_test_ds$Spcork, pred_test_ds$Pred)
 confusionMatrix2k
 
+#Accuracy: Overall, how often is the classifier correct?
+#Misclassification Rate: Overall, how often is it wrong? 1 minus Accuracy ("Error Rate")
+
 
 ############################################Model 2
 
