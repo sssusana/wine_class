@@ -5,18 +5,28 @@ library(rpart.plot)
 library(caret)
 library(party)
 library(partykit)
+install.packages("pastecs")
+library(pastecs)
 
 #Load 2k DB:
 exerc1 <- read_excel("~/Documents/GitHub/wine_class/Exer1.xls")
+View(exerc1)
 #Load 8k DB:
 customersDB <- read_excel("~/Documents/GitHub/wine_class/finalDS.xlsx")
 
 #Discriptive analysis
+options(scipen=100)
+options(digits = 2)
+stat.desc(exerc1, basic = FALSE)
 summary(exerc1)
 sapply(Exer1, class)
 table(exerc1$Spcork)
+histogram(exerc1$Spcork)
+
+
 prop.table(table(exerc1$Spcork))
 print("Only 0.0725 in 2k customers bought the product")
+
 
 #Check some main var
 print("Kids at Home")
@@ -27,13 +37,14 @@ prop.table(table(exerc1$Spcork,exerc1$Teenhome))
 #Dataset only with buyers
 buyers <- exerc1[which(exerc1$Spcork == 1), ]
 notbuyers <- exerc1[which(exerc1$Spcork == 0), ]
-summary(exerc1)
-summary(buyers)
+stat.desc(buyers, basic = FALSE)
+stat.desc(notbuyers, basic = FALSE)
 
-boxplotB_NB <- function(column_name){return(boxplot(c(buyers[column_name], notbuyers[column_name]), col=(c("green", "red")), main="Comparision Between Buyers and Non-Buyers", xlab=("column_name")))}
+boxplotB_NB <- function(column_name){return(boxplot(c(buyers[column_name], notbuyers[column_name]), col=(c("light green", "#CD5C5C")), main="Comparision Between Buyers and Non-Buyers", xlab=("column_name")))}
 boxplotB_NB("Age")
-
-
+boxplotB_NB("Monetary")
+boxplotB_NB("Freq")
+boxplotB_NB("Income")
   
 #Decision Tree with rpart
 #Method = "class" if you have a classification tree
