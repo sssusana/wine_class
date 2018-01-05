@@ -21,6 +21,7 @@ stat.desc(exerc1, basic = FALSE)
 summary(exerc1)
 sapply(Exer1, class)
 table(exerc1$Spcork)
+prop.table(table(exerc1$Spcork))
 histogram(exerc1$Spcork)
 
 
@@ -51,14 +52,20 @@ boxplotB_NB("Income")
 #Method = "anova" if you have a regression tree
 
 colnames(exerc1)
-dtwines <-rpart(formula = Spcork ~ Dayswus + Income + Recency + Monetary + Age + Edu + Teenhome + Kidhome + Freq, data = exerc1, method = "class")
+dtwines <-rpart(formula = Spcork ~ Dayswus + Income + Recency + Monetary 
+                + Age + Edu + Teenhome + Kidhome + Freq, data = exerc1, method = "class")
 printcp(dtwines)
 as.party(dtwines) 
+rpart.plot(dtwines, type = 2 )
+
+
+
+help("rpart.plot")
 #Now we see how many variables don't really matter")
 #Variables actually used in tree construction: Dayswus  Income   Monetary Recency
 
 
-#Run the model only with the proper var + rpart.control
+#Run the model only with the proper var + rpart.control for split with min 40; cp= 0.5%
 dtwine_reduced <- rpart(Spcork ~ 
                    Dayswus + Income + Recency + Monetary, 
                    data = exerc1, method="class", control = rpart.control(minsplit = 40, cp = 0.005))
@@ -66,7 +73,7 @@ dtwine_reduced <- rpart(Spcork ~
 #Info + viz on Decision Tree
 as.party(dtwine_reduced)
 printcp(dtwine_reduced)
-rpart.plot(dtwine_reduced)
+rpart.plot(dtwine_reduced, type=2)
 
 
 #Making Predictions
@@ -80,6 +87,7 @@ mysolution
 dtwines2k <- exerc1
 pred_test <- predict(dtwine_reduced, newdata = dtwines2k, type="class")
 pred_test_ds <- data.frame(ID=dtwines2k$Custid, Spcork=dtwines2k$Spcork, Pred=pred_test) 
+View(pred_test_ds)
 
 #Testing Da
 #ConfusionMatrix for 2k
@@ -122,17 +130,24 @@ nrow(test_wines)
 
 model_3 <- rpart(Spcork ~ Dayswus + Income + Recency + Monetary, 
                  data = train_wines, method="class", 
-                 control = rpart.control(minsplit = 10, cp = 0.005))
+                 control = rpart.control(minsplit = 15, cp = 0.3))
 
 #Prediction
 myprediction3 <- predict(model_3, newdata = test_wines, type = "class")
 plot(myprediction3)
+as.party(model_3)
+printcp(model_3)
+rpart.plot(model_3, type=2)
+
 
 #Solution
 mysolution3 <- data.frame(test_wines, testingspcork = myprediction3)
+View(mysolution3)
+
 
 #Confusion Matrix
 confusionMatrix3 <- confusionMatrix(mysolution3$Spcork, mysolution3$testingspcork)
+nrow(test_wines)
 confusionMatrix3
 
 
