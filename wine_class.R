@@ -9,10 +9,10 @@ install.packages("pastecs")
 library(pastecs)
 
 #Load 2k DB:
-exerc1 <- read_excel("~/Documents/GitHub/wine_class/Exer1.xls")
+#Exer1
 View(exerc1)
 #Load 8k DB:
-customersDB <- read_excel("~/Documents/GitHub/wine_class/finalDS.xlsx")
+#finalds 
 
 #Discriptive analysis
 options(scipen=100)
@@ -138,6 +138,46 @@ plot(myprediction3)
 as.party(model_3)
 printcp(model_3)
 rpart.plot(model_3, type=2)
+
+#Model3 with a function with two arguments: minsplit value and cp value
+#Also, me and Alex did a loop to get the R2 associated with different cp values (from 0.0003 to 0.8), ceteris paribus. 
+
+minsplit_value=10
+
+cp_value=0.05
+
+
+model_3 <- rpart(Spcork ~ Dayswus + Income + Recency + Monetary, 
+                 data = train_wines, method="class", 
+                 control = rpart.control(minsplit = minsplit_value, cp = cp_value));
+
+myprediction3 <- predict(model_3, newdata = test_wines, type = "class");
+cm <- confusionMatrix(test_wines$Spcork, myprediction3);
+tab <- cm$table;
+format(((tab[1,1]+tab[2,2])/sum(tab)),nsmall =10)
+
+
+rpart_acc<-function(minsplit_value, cp_value)
+{ model_3 <- rpart(Spcork ~ Dayswus + Income + Recency + Monetary, 
+                   data = train_wines, method="class", 
+                   control = rpart.control(minsplit = minsplit_value, cp = cp_value));
+
+  myprediction3 <- predict(model_3, newdata = test_wines, type = "class");
+  cm <- confusionMatrix(test_wines$Spcork, myprediction3);
+  tab <- cm$table;
+  return(((tab[1,1]+tab[2,2])/sum(tab)))
+  return(format(((tab[1,1]+tab[2,2])/sum(tab)),nsmall =4))
+} 
+
+#for (n in c(0.0003, 0.001, 0.003, 0.01, 0.8)) {
+listacc <- c()
+listcp <- seq(0.0001, 0.08, 0.0005)
+for (n in listcp) {
+  acc<- rpart_acc(10, n);
+  listacc <- append(listacc, acc)
+  }
+plot(listcp, listacc,type='l')
+
 
 
 #Solution
